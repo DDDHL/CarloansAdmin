@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "animejs": "^3.2.1",
+    "@types/node": "^18.16.2",
     "element-plus": "^2.3.4",
+    "jquery": "^3.6.4",
     "pinia": "^2.0.35",
     "pinia-plugin-persistedstate": "^3.1.0",
     "sass": "^1.62.1",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/animejs": "^3.1.7",
+    "@types/jquery": "^3.5.16",
     "@vitejs/plugin-vue": "^4.1.0",
     "typescript": "^5.0.2",
     "unplugin-auto-import": "^0.15.3",
