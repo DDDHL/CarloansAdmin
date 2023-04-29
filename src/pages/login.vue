@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import $ from 'jquery'
+import { message } from '@/utils'
+import router from '@/router'
 let isIn = true
 let isOut = false
 let span: HTMLElement
@@ -11,6 +13,11 @@ let password = ref('')
 let code = ref('')
 onMounted(() => {
   init()
+  ElNotification({
+    title: 'Tips',
+    message: 'Mock数据，填满随意登录~',
+    type: 'success',
+  })
 })
 
 const getCode = () => {
@@ -29,14 +36,35 @@ const getCode = () => {
 }
 
 const login = () => {
+  let checkOk = true
+  if (!account.value) {
+    $('.accountInput').addClass('wrongInput')
+    checkOk = false
+  } else if (!password.value) {
+    $('.passwordInput').addClass('wrongInput')
+    checkOk = false
+  } else if (!code.value) {
+    $('.codeInput').addClass('wrongInput')
+    checkOk = false
+  }
+  setTimeout(() => {
+    $('.accountInput').removeClass('wrongInput')
+    $('.passwordInput').removeClass('wrongInput')
+    $('.codeInput').removeClass('wrongInput')
+  }, 500);
+  if (!checkOk) return
+  // 进入登录流程
   con.value.classList.remove('fail')
   con.value.classList.add('success');
-  console.log(account.value)
-  console.log(password.value)
-  console.log(code.value)
-  setTimeout(() => {
-    con.value.classList.add('fail')
-  }, 2000);
+
+  timer.push(window.setTimeout(() => {
+    router.push('/home')
+    message('登录成功')
+  }, 1500))
+
+  // 登录失败
+  //con.value.classList.add('fail')
+  //message('登录失败','error')
 }
 
 const init = () => {
@@ -101,10 +129,10 @@ onBeforeUnmount(() => {
     <div class="container" ref="con">
       <h1>CarLoans</h1>
       <div class="form">
-        <input type="text" placeholder="您的账号" v-model="account">
-        <input type="password" placeholder="您的密码" v-model="password">
+        <input type="text" class="accountInput" placeholder="您的账号" v-model="account">
+        <input type="password" class="passwordInput" placeholder="您的密码" v-model="password">
         <div class="code">
-          <input type="text" placeholder="验证码" v-model="code">
+          <input type="text" class="codeInput" placeholder="验证码" v-model="code">
           <div class="num" @click="getCode">{{ (typeof codeText) === 'number' ? codeText + ' s' : codeText }}</div>
         </div>
         <button class="btn-login" @click="login">登录</button>
@@ -348,16 +376,40 @@ onBeforeUnmount(() => {
   visibility: visible;
 }
 
+.container .wrongInput {
+  animation: wrongInput 0.5s ease none;
+}
+
 /* 定义动画 */
 @keyframes square {
   0% {
     transform: translateY(0);
-    //opacity: 0.15;
   }
 
   100% {
     transform: translateY(-120vh) rotate(600deg);
     opacity: 0.1;
+  }
+}
+
+/* 动画 */
+@keyframes wrongInput {
+  0% {
+    transform: translateX(-20px);
+    border: 1px solid #fee082;
+    color: #fee082;
+  }
+
+  50% {
+    transform: translateX(20px);
+    border: 1px solid #fee082;
+    color: #fee082;
+  }
+
+  100% {
+    transform: translateX(0);
+    border: 1px solid #fee082;
+    color: #fee082;
   }
 }
 </style>
@@ -395,7 +447,6 @@ onBeforeUnmount(() => {
   }
 }
 
-/* 动画 */
 /* 设置鼠标进入时，元素的动画 */
 @keyframes in {
 

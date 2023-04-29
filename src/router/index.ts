@@ -4,14 +4,33 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    component: () => import('@/pages/login.vue')
+    component: () => import('@/pages/Login.vue')
   }, {
-    path: '/home',
-    component: () => import('@/pages/home.vue')
+    path: '/Home',
+    redirect: '/EchartsHome',
+    component: () => import('@/pages/Home.vue'),
+    children: [
+      {
+        path: '/EchartsHome',
+        component: () => import('@/pages/EchartsHome.vue')
+      },
+      {
+        path: '/AddPage',
+        component: () => import('@/pages/AddPage.vue')
+      },
+      {
+        path: '/List',
+        component: () => import('@/pages/List.vue')
+      },
+      {
+        path: '/User',
+        component: () => import('@/pages/User.vue')
+      },
+    ]
   }, {
     // 定义404路由
     path: '/404',
-    component: () => import('@/pages/notFound.vue')
+    component: () => import('@/pages/NotFound.vue')
   }, {
     // 匹配为定义路由然后重定向到404页面
     path: '/:pathMath(.*)',

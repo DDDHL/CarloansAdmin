@@ -10,15 +10,20 @@ export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      imports: ["vue", "vue-router"],
-      resolvers: [ElementPlusResolver()],
+      // 自动导入vue ref、computed、watch 相关函数
+      imports: ["vue", "@vueuse/core", "vue-router"],
+      resolvers: [
+        ElementPlusResolver(),
+      ],
       dts: "src/auto-import.d.ts",
       eslintrc: {
         enabled: true
       },
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [
+        ElementPlusResolver(),
+      ],
     }),
   ],
   resolve: {

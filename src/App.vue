@@ -5,13 +5,4 @@
   <router-view></router-view>
 </template>
 
-<style lang="scss">
-html,
-body,
-#app {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-}
-</style>
+<style lang="scss"></style>
