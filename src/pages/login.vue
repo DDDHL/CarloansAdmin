@@ -2,6 +2,7 @@
 import $ from 'jquery'
 import { message } from '@/utils'
 import router from '@/router'
+import { getPhoneCode, userLogin } from '@/api'
 let isIn = true
 let isOut = false
 let span: HTMLElement
@@ -11,7 +12,9 @@ let timer: number[] = []
 let account = ref('')
 let password = ref('')
 let code = ref('')
+let sysCode: string | undefined
 onMounted(() => {
+  sysCode = undefined
   init()
   ElNotification({
     title: 'Tips',
@@ -20,9 +23,10 @@ onMounted(() => {
   })
 })
 
-const getCode = () => {
-  if ((typeof codeText.value) === 'number') {
-    // 正在获取
+const getCode = async () => {
+  if ((typeof codeText.value) === 'number') return
+  if (!account.value) {
+    message('请先输入手机号', 'warning')
     return
   }
   codeText.value = 60
@@ -33,9 +37,11 @@ const getCode = () => {
       codeText.value = '重新获取'
     }
   }, 1000))
+  let res: any = await getPhoneCode(account.value)
+  sysCode = res.result.data.code
 }
 
-const login = () => {
+const login = async () => {
   let checkOk = true
   if (!account.value) {
     $('.accountInput').addClass('wrongInput')
@@ -57,14 +63,28 @@ const login = () => {
   con.value.classList.remove('fail')
   con.value.classList.add('success');
 
-  timer.push(window.setTimeout(() => {
-    router.push('/home')
-    message('登录成功')
-  }, 1500))
+  if (sysCode === undefined) {
+    con.value.classList.add('fail')
+    message('请先获取验证码', 'warning')
+    return
+  }
+  if (sysCode !== code.value) {
+    con.value.classList.add('fail')
+    message('验证码错误', 'error')
+    return
+  }
 
-  // 登录失败
-  //con.value.classList.add('fail')
-  //message('登录失败','error')
+  userLogin(account.value, password.value, code.value).then((res: any) => {
+    if (res.resultCode === 200) {
+      timer.push(window.setTimeout(() => {
+        router.push('/home')
+        message('登录成功')
+      }, 1500))
+    }
+  }).catch(() => {
+    con.value.classList.add('fail')
+    message('登录失败', 'error')
+  })
 }
 
 const init = () => {
@@ -129,7 +149,7 @@ onBeforeUnmount(() => {
     <div class="container" ref="con">
       <h1>CarLoans</h1>
       <div class="form">
-        <input type="text" class="accountInput" placeholder="您的账号" v-model="account">
+        <input type="text" class="accountInput" placeholder="您的手机号" v-model="account">
         <input type="password" class="passwordInput" placeholder="您的密码" v-model="password">
         <div class="code">
           <input type="text" class="codeInput" placeholder="验证码" v-model="code">
