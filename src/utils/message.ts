@@ -1,3 +1,5 @@
+import { usePublicStore } from '@/stores'
+import router from "@/router";
 // 统一消息弹窗
 const message = (text: string = '消息通知', type: 'success' | 'warning' | 'error' | 'info' = 'success', grouping: boolean = false, showClose: boolean = false): void => {
   ElMessage({
@@ -9,6 +11,15 @@ const message = (text: string = '消息通知', type: 'success' | 'warning' | 'e
   })
 }
 
+// 统一退出登录
+const logOut = () => {
+  message('登录已过期，请重新登录', 'warning')
+  usePublicStore().$reset()
+  //localStorage.clear()
+  router.push('/')
+}
+
 export {
-  message
+  message,
+  logOut
 }

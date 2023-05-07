@@ -8,8 +8,22 @@ export const usePublicStore = defineStore(
       userInfo: {
         name: 'Leander',
         sex: 1,
-        age: 23
+        age: 23,
+        avatarUrl: '',
+        phone: '',
+        password: '',
+        address: "是的",
+        gradeLevel: "大学本科",
+        id: 1,
+        identifier: "1",
+        marital: "未婚",
+        nativePlace: "广东珠海",
+        political: "团员",
+        status: 1,
+        verifyStatus: "UN_VERIFIED",
+        workingCondition: 1
       },
+      infoCount: 0,
       fullLoading: false,
       fullScreen: false,
       asideShow: false,

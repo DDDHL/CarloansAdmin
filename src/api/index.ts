@@ -22,3 +22,12 @@ export const getPhoneCode = (phone: string) => {
     params: { phone }
   })
 }
+
+// 获取用户信息
+export const getUserInfo = (id: string) => {
+  return request({
+    url: '/carLoan-api/sys/account/get',
+    method: 'GET',
+    params: { id }
+  })
+}

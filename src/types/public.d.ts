@@ -4,12 +4,26 @@ export interface publicStoreInterface {
   asideShow: boolean
   breadList: breadListType[]
   userInfo: userInfoType
+  infoCount: number
 }
 
 type userInfoType = {
   name: string
   sex: number
   age: number
+  avatarUrl: string
+  password: string
+  phone: string
+  address: string
+  gradeLevel: string
+  id: number
+  identifier: string
+  marital: string
+  nativePlace: string
+  political: string
+  status: number
+  verifyStatus: string
+  workingCondition: number
 }
 
 type breadListType = {

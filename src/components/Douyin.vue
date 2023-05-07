@@ -19,7 +19,7 @@ const publicStore = usePublicStore()
   background-color: #000;
   /* 溢出隐藏 */
   overflow: hidden;
-  height: 10vh;
+  height: 6vh;
   width: 30vw;
 }
 
@@ -29,10 +29,10 @@ const publicStore = usePublicStore()
 
 .text {
   color: #fff;
-  font-size: 90px;
+  font-size: 30px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 5px;
+  letter-spacing: 2px;
   text-align: center;
   position: relative;
 }

@@ -2,28 +2,38 @@
 import router from "@/router";
 import { usePublicStore } from "@/stores";
 import { storeToRefs } from "pinia";
+import { getUserInfo } from '@/api'
+import { logOut } from '@/utils'
 const publicStore = usePublicStore()
 const { fullLoading, asideShow, breadList } = storeToRefs(publicStore)
 fullLoading.value = true
 let timer: number[] = []
 
 onMounted(() => {
-  ElNotification({
-    title: '登录成功',
-    message: '欢迎回来~',
-    type: 'success',
-    position: 'bottom-right',
-  })
-  timer.push(window.setTimeout(() => {
-    fullLoading.value = false
-    ElNotification({
-      title: '收到消息',
-      message: '有新的单发布啦，请及时查看',
-      type: 'info',
-      position: 'bottom-right',
-    })
-  }, 3000))
+  timer.forEach(item => clearTimeout(item))
+  userInfo()
 })
+
+const userInfo = async () => {
+  let userRes: any = await getUserInfo('5')
+  if (userRes.resultCode && userRes.resultCode === 200) {
+    publicStore.userInfo = userRes.result.data
+    timer.push(window.setTimeout(() => {
+      fullLoading.value = false
+      ElNotification({
+        title: '登录成功',
+        message: '欢迎回来~',
+        type: 'success',
+        position: 'bottom-right',
+      })
+    }, 1500))
+  } else {
+    timer.push(window.setTimeout(() => {
+      fullLoading.value = false
+      logOut()
+    }, 1500))
+  }
+}
 
 const closeBread = (index: number, isSelect: boolean) => {
   let url = publicStore.breadSelect(index, 'close', isSelect)!
@@ -38,9 +48,7 @@ const go = (index: number, url: string) => {
 }
 
 onBeforeUnmount(() => {
-  timer.forEach(i => {
-    window.clearTimeout(i)
-  })
+  timer.forEach(item => clearTimeout(item))
 })
 </script>
 

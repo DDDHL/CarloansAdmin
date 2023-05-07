@@ -1,19 +1,11 @@
 <script setup lang="ts">
 import { usePublicStore } from "@/stores";
 import { storeToRefs } from "pinia";
-import avatarUrl from '@/assets/picture/avatar.jpg'
-import router from '@/router'
+import { logOut } from '@/utils'
 const publicStore = usePublicStore()
-const { asideShow, fullLoading, fullScreen, breadList, userInfo } = storeToRefs(publicStore)
+const { asideShow, fullScreen, breadList, userInfo, infoCount } = storeToRefs(publicStore)
 
 const reFresh = () => window.location.reload()
-
-const loginOut = () => {
-  fullLoading.value = true
-  window.setTimeout(() => {
-    router.push('/')
-  }, 3000)
-}
 
 const info = () => {
   ElNotification({
@@ -58,11 +50,14 @@ const changeScreen = () => {
       <el-col :span="8">
         <div class="avatar">
           <div class="rightIcon">
-            <el-badge :value="12" style="margin-top: 4px;">
+            <el-badge :value="infoCount" v-show="infoCount" style="margin-top: 4px;">
               <el-icon size="28" @click="info">
                 <component is="Message" />
               </el-icon>
             </el-badge>
+            <el-icon size="28" @click="info" v-show="!infoCount">
+              <component is="Message" />
+            </el-icon>
             <el-icon @click="changeScreen" size="25">
               <component v-if="!fullScreen" is="FullScreen" />
               <component v-else is="Crop" />
@@ -72,15 +67,16 @@ const changeScreen = () => {
             popper-style="box-shadow: rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px; padding: 20px;"
             placement="bottom-start">
             <template #reference>
-              <el-avatar :size="40" :src="avatarUrl" />
+              <el-avatar :size="40" :src="publicStore.userInfo.avatarUrl" />
             </template>
             <template #default>
               <div class="popoverAvatar">
                 <div class="userName">
                   <p style="font-weight: bold;">{{ userInfo.name }}</p>
-                  <p style="margin: 0; font-size: 14px; color: var(--el-color-info)">&nbsp;@管理员</p>
+                  <p style="margin: 0; font-size: 14px; color: var(--el-color-info)">&nbsp;@{{
+                    publicStore.userInfo.verifyStatus === 'UN_VERIFIED' ? '管理员' : '客户' }}</p>
                 </div>
-                <el-button type="danger" size="small" @click="loginOut">退出登录</el-button>
+                <el-button type="danger" size="small" @click="logOut">退出登录</el-button>
               </div>
             </template>
           </el-popover>

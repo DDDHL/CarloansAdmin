@@ -3,15 +3,17 @@ import $ from 'jquery'
 import { message } from '@/utils'
 import router from '@/router'
 import { getPhoneCode, userLogin } from '@/api'
+import { usePublicStore } from '@/stores'
+const publicStore = usePublicStore()
 let isIn = true
 let isOut = false
 let span: HTMLElement
 let con = ref()
 let codeText = ref<any>('获取验证码')
 let timer: number[] = []
-let account = ref('')
-let password = ref('')
-let code = ref('')
+let account = ref('13411394421')
+let password = ref('123456')
+let code = ref('1234')
 let sysCode: string | undefined
 onMounted(() => {
   sysCode = undefined
@@ -37,8 +39,9 @@ const getCode = async () => {
       codeText.value = '重新获取'
     }
   }, 1000))
-  let res: any = await getPhoneCode(account.value)
-  sysCode = res.result.data.code
+  //let res: any = await getPhoneCode(account.value)
+  //sysCode = res.result.data.code
+  sysCode = '1234'
 }
 
 const login = async () => {
@@ -74,17 +77,30 @@ const login = async () => {
     return
   }
 
-  userLogin(account.value, password.value, code.value).then((res: any) => {
-    if (res.resultCode === 200) {
-      timer.push(window.setTimeout(() => {
-        router.push('/home')
-        message('登录成功')
-      }, 1500))
-    }
-  }).catch(() => {
+  // 测试用
+  if (localStorage.getItem('accessToken')) {
+    timer.push(window.setTimeout(() => {
+      router.push('/home')
+      message('登录成功')
+    }, 1500))
+    return
+  }
+
+  // 先登录，后获取用户信息
+  let loginRes: any = await userLogin(account.value, password.value, code.value)
+  console.log(loginRes)
+  if (loginRes.resultCode && loginRes.resultCode === 200) {
+    publicStore.infoCount = loginRes.result.newInformationVO.count
+    // let userRes: any = await getUserInfo(loginRes.result.newInformationVO.accountId)
+    // console.log(userRes)
+    // timer.push(window.setTimeout(() => {
+    //  router.push('/home')
+    //   message('登录成功')
+    // }, 1500))
+  } else {
     con.value.classList.add('fail')
-    message('登录失败', 'error')
-  })
+    message(loginRes.message || '登录请求错误', 'error')
+  }
 }
 
 const init = () => {
