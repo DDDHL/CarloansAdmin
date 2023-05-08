@@ -74,9 +74,9 @@ const changeScreen = () => {
                 <div class="userName">
                   <p style="font-weight: bold;">{{ userInfo.name }}</p>
                   <p style="margin: 0; font-size: 14px; color: var(--el-color-info)">&nbsp;@{{
-                    publicStore.userInfo.verifyStatus === 'UN_VERIFIED' ? '管理员' : '客户' }}</p>
+                    publicStore.role }}</p>
                 </div>
-                <el-button type="danger" size="small" @click="logOut">退出登录</el-button>
+                <el-button type="danger" size="small" @click="logOut('已退出登录')">退出登录</el-button>
               </div>
             </template>
           </el-popover>

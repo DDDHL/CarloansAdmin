@@ -4,16 +4,9 @@ import type { UploadProps } from 'element-plus'
 import { message, logOut } from '@/utils'
 const serverUrl = import.meta.env.VITE_BASE_URL
 const publicStore = usePublicStore()
-const options: any = new Map([
-  [0, 'Female'],
-  [1, 'Male'],
-  [2, 'Pointer'],
-  [3, 'Delete'],
-])
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
-  res,
-  uploadFile
+  res
 ) => {
   if (res.resultCode === 480) {
     logOut()

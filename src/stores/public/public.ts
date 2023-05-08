@@ -23,18 +23,53 @@ export const usePublicStore = defineStore(
         verifyStatus: "UN_VERIFIED",
         workingCondition: 1
       },
+      menuList: [
+        {
+          name: "后台主页",
+          icon: 'House',
+          url: '/EchartsHome'
+        },
+        {
+          name: "查询列表",
+          icon: 'Document',
+          url: '/List'
+        },
+        {
+          name: '个人中心',
+          icon: 'User',
+          url: '/User'
+        }
+      ],
+      role: '管理员',
       infoCount: 0,
       fullLoading: false,
       fullScreen: false,
       asideShow: false,
       breadList: [{
         name: '后台主页',
-        url: '/echartsHome',
+        url: '/EchartsHome',
         selectType: true
       }]
     }
   },
   actions: {
+    // 侧边栏权限刷新
+    menuListFlash() {
+      switch (this.role) {
+        case '管理员':
+          this.menuList.push(
+            {
+              name: "新增订单",
+              icon: 'Edit',
+              url: '/AddPage'
+            }, {
+            name: '用户中心',
+            icon: 'Avatar',
+            url: '/UserList'
+          })
+          break;
+      }
+    },
     breadSelect(index: number, type: 'select' | 'close' = 'select', isSelect: boolean = false) {
       switch (type) {
         case 'select':

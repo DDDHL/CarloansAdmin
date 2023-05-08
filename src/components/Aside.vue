@@ -2,34 +2,8 @@
 import { usePublicStore } from "@/stores";
 import { storeToRefs } from "pinia";
 const publicStore = usePublicStore()
-const { asideShow, breadList, } = storeToRefs(publicStore)
-let menuList = ref([
-  {
-    name: "后台主页",
-    icon: 'House',
-    url: '/echartsHome'
-  },
-  {
-    name: "查询列表",
-    icon: 'Document',
-    url: '/List'
-  },
-  {
-    name: "新增订单",
-    icon: 'Edit',
-    url: '/AddPage'
-  },
-  {
-    name: '个人中心',
-    icon: 'User',
-    url: '/User'
-  },
-  {
-    name: '用户中心',
-    icon: 'Avatar',
-    url: '/UserList'
-  }
-])
+const { asideShow, breadList, menuList } = storeToRefs(publicStore)
+
 const handleOpen = (key: string) => {
   let now = menuList.value.find(item => item.url === key)!
   let breadIndex = breadList.value.findIndex(item => item.url === key)

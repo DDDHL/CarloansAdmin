@@ -20,7 +20,7 @@ onMounted(() => {
   init()
   ElNotification({
     title: 'Tips',
-    message: 'Mock数据，填满随意登录~',
+    message: '获取验证码后，点击登录~',
     type: 'success',
   })
 })
@@ -81,6 +81,7 @@ const login = async () => {
   let loginRes: any = await userLogin(account.value, password.value, code.value)
   if (loginRes.resultCode && loginRes.resultCode === 200) {
     publicStore.infoCount = loginRes.result.newInformationVO.count
+    publicStore.role = loginRes.result.role
     timer.push(window.setTimeout(() => {
       router.push('/home')
       message('登录成功')

@@ -5,6 +5,14 @@ export interface publicStoreInterface {
   breadList: breadListType[]
   userInfo: userInfoType
   infoCount: number
+  role: string
+  menuList: menuListType[]
+}
+
+type menuListType = {
+  name: string
+  icon: string,
+  url: string
 }
 
 type userInfoType = {

@@ -12,8 +12,8 @@ const message = (text: string = '消息通知', type: 'success' | 'warning' | 'e
 }
 
 // 统一退出登录
-const logOut = () => {
-  message('登录已过期，请重新登录', 'warning')
+const logOut = (msgText = '登录已过期，请重新登录') => {
+  message(msgText, 'warning')
   usePublicStore().$reset()
   //localStorage.clear()
   router.push('/')

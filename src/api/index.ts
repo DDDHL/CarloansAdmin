@@ -45,3 +45,22 @@ export const getUserList = (pageConfig: {
     }
   })
 }
+
+// 修改用户信息
+export const editUserInfo = (userInfo: {
+  id: number,
+  phone?: string,
+  address?: string,
+  gradeLevel?: string,
+  marital?: string,
+  political?: string,
+  workingCondition?: number,
+  nativePlace?: string,
+  birthday?: string
+}) => {
+  return request({
+    url: '/carLoan-api/sys/account/updateAccount',
+    method: 'POST',
+    data: { ...userInfo }
+  })
+}
