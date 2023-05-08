@@ -3,7 +3,7 @@ import { usePublicStore } from "@/stores";
 import { storeToRefs } from "pinia";
 const publicStore = usePublicStore()
 const { asideShow, breadList, } = storeToRefs(publicStore)
-let menuList = [
+let menuList = ref([
   {
     name: "后台主页",
     icon: 'House',
@@ -20,13 +20,18 @@ let menuList = [
     url: '/AddPage'
   },
   {
-    name: '用户中心',
+    name: '个人中心',
     icon: 'User',
     url: '/User'
+  },
+  {
+    name: '用户中心',
+    icon: 'Avatar',
+    url: '/UserList'
   }
-]
+])
 const handleOpen = (key: string) => {
-  let now = menuList.find(item => item.url === key)!
+  let now = menuList.value.find(item => item.url === key)!
   let breadIndex = breadList.value.findIndex(item => item.url === key)
   // 已有面包屑
   if (breadIndex !== -1) {

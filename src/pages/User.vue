@@ -59,8 +59,7 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
       <div class="info">
         <Douyin />
         <div class="infoInput">
-          <el-input v-model="publicStore.userInfo.name" placeholder="请输入名字" prefix-icon="Avatar" />
-          <el-select clearable style="width: 30vw" v-model="publicStore.userInfo.sex" placeholder="性别">
+          <!-- <el-select clearable style="width: 30vw" v-model="publicStore.userInfo.sex" placeholder="性别">
             <template #prefix>
               <el-icon size="16">
                 <component :is="options.get(publicStore.userInfo.sex)" />
@@ -70,8 +69,10 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
             <el-option label="男" :value="1"></el-option>
             <el-option label="中" :value="2"></el-option>
             <el-option label="不知道" :value="3"></el-option>
-          </el-select>
-          <el-input v-model="publicStore.userInfo.age" placeholder="请输入年龄" prefix-icon="Calendar" />
+          </el-select> -->
+          <el-input :value="publicStore.userInfo.sex ? '男' : '女'" placeholder="请输入性别"
+            :prefix-icon="publicStore.userInfo.sex ? 'Male' : 'Female'" disabled />
+          <el-input v-model="publicStore.userInfo.age" placeholder="请输入年龄" prefix-icon="Calendar" disabled />
           <el-input v-model="publicStore.userInfo.phone" placeholder="请输入手机号" prefix-icon="Iphone" disabled />
           <el-input v-model="publicStore.userInfo.gradeLevel" placeholder="请输入学历" prefix-icon="School" disabled />
           <el-input v-model="publicStore.userInfo.political" placeholder="请输入政治面貌" prefix-icon="InfoFilled" disabled />

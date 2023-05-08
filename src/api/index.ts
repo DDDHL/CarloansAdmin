@@ -31,3 +31,17 @@ export const getUserInfo = (id: string) => {
     params: { id }
   })
 }
+
+// 获取用户列表
+export const getUserList = (pageConfig: {
+  pageSize: number, pageNo: number, pageCount: number,
+  name: string, identifier: string, phone: string
+}) => {
+  return request({
+    url: '/carLoan-api/sys/account/page',
+    method: 'POST',
+    data: {
+      ...pageConfig
+    }
+  })
+}

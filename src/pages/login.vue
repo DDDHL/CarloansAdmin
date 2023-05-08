@@ -77,26 +77,14 @@ const login = async () => {
     return
   }
 
-  // 测试用
-  if (localStorage.getItem('accessToken')) {
+  // 先登录，后获取用户信息
+  let loginRes: any = await userLogin(account.value, password.value, code.value)
+  if (loginRes.resultCode && loginRes.resultCode === 200) {
+    publicStore.infoCount = loginRes.result.newInformationVO.count
     timer.push(window.setTimeout(() => {
       router.push('/home')
       message('登录成功')
     }, 1500))
-    return
-  }
-
-  // 先登录，后获取用户信息
-  let loginRes: any = await userLogin(account.value, password.value, code.value)
-  console.log(loginRes)
-  if (loginRes.resultCode && loginRes.resultCode === 200) {
-    publicStore.infoCount = loginRes.result.newInformationVO.count
-    // let userRes: any = await getUserInfo(loginRes.result.newInformationVO.accountId)
-    // console.log(userRes)
-    // timer.push(window.setTimeout(() => {
-    //  router.push('/home')
-    //   message('登录成功')
-    // }, 1500))
   } else {
     con.value.classList.add('fail')
     message(loginRes.message || '登录请求错误', 'error')

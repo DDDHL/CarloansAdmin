@@ -26,6 +26,10 @@ const routes: Array<RouteRecordRaw> = [
         path: '/User',
         component: () => import('@/pages/User.vue')
       },
+      {
+        path: '/UserList',
+        component: () => import('@/pages/UserList.vue')
+      },
     ]
   }, {
     // 定义404路由

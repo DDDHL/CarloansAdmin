@@ -7,10 +7,7 @@ import 'nprogress/nprogress.css'
 const requests = axios.create({
   // 配置基础路径
   baseURL: import.meta.env.VITE_BASE_URL,
-  timeout: 10 * 1000,
-  headers: {
-    accessToken: localStorage.getItem('accessToken') || ''
-  }
+  timeout: 10 * 1000
 })
 
 //拦截器，设置token和进度条
@@ -20,6 +17,8 @@ requests.interceptors.request.use(
     if (config.url === '/question/upload' || config.url === 'AI/question/upload') {
       config.headers!['Content-Type'] = 'multipart/form-data'
     }
+    // 自动带token
+    config.headers.accessToken = localStorage.getItem('accessToken') || ''
     NProgress.start()
     return config
   },
@@ -33,7 +32,6 @@ requests.interceptors.response.use((res: AxiosResponse) => {
   // 请求成功的回调函数
   NProgress.done()
   res.headers.accesstoken && localStorage.setItem('accessToken', res.headers.accesstoken)
-
   if (res.data.resultCode === 480) {
     logOut()
   }

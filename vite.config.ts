@@ -26,6 +26,9 @@ export default defineConfig({
       ],
     }),
   ],
+  server: {
+    port: 8888
+  },
   resolve: {
     //设置路径别名
     alias: {
