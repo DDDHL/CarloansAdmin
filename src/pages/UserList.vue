@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { getUserList, getUserInfo, editUserInfo } from '@/api'
+import { getUserList, getUserInfo, editUserInfo, aduitAccount, addUser } from '@/api'
 import { message } from '@/utils/index'
 let tableData = ref([])
 let dialogVisible = ref(false)
 let tableLoading = ref(false)
 let saveLoading = ref(false)
 let clickUserInfo: any = ref({})
+let dialogConfig = ref({
+  title: '编辑用户信息',
+  btnText: '保存',
+})
 const options: any = new Map([
   [0, 'Female'],
   [1, 'Male'],
@@ -25,17 +29,27 @@ onMounted(() => {
   getData()
 })
 
-const rowClick = async (id: string) => {
-  tableLoading.value = true
-  let res: any = await getUserInfo(id)
-  if (res.resultCode === 200) {
-    clickUserInfo.value = res.result.data
-    console.log(clickUserInfo.value)
-    dialogVisible.value = true
+const rowClick = async (id: string, type: 'add' | 'edit' = 'edit') => {
+  if (type === 'edit') {
+    // 打开编辑用户
+    tableLoading.value = true
+    let res: any = await getUserInfo(id)
+    if (res.resultCode === 200) {
+      clickUserInfo.value = res.result.data
+      console.log(clickUserInfo.value)
+      dialogVisible.value = true
+    } else {
+      message('获取用户信息失败!', 'error')
+    }
+    tableLoading.value = false
   } else {
-    message('获取用户信息失败!', 'error')
+    // 打开新增用户
+    clickUserInfo.value = {}
+    clickUserInfo.value.sex = 1
+    dialogConfig.value.btnText = '新增'
+    dialogConfig.value.btnText = '新增用户'
+    dialogVisible.value = true
   }
-  tableLoading.value = false
 }
 
 const reset = () => {
@@ -47,15 +61,45 @@ const reset = () => {
 
 const saveEditUser = async () => {
   saveLoading.value = true
-  let res: any = await editUserInfo(clickUserInfo.value)
-  if (res.resultCode === 200) {
-    message('保存成功!')
+  if (dialogConfig.value.btnText === '保存') {
+    // 编辑用户信息
+    let res: any = await editUserInfo(clickUserInfo.value)
+    if (res.resultCode === 200) {
+      message('保存成功!')
+      getData()
+      dialogVisible.value = false
+    } else {
+      message(res.message || '保存失败!', 'error')
+    }
   } else {
-    message('保存失败!', 'error')
+    // 新增用户
+    console.log(clickUserInfo.value)
   }
-  dialogVisible.value = false
   saveLoading.value = false
-  getData()
+}
+
+const audit = async (row: any, type: 'VERIFIED' | 'UN_VERIFIED') => {
+  let text = `确定通过此 "${row.name}" 的账号审核?`
+  if (type === 'UN_VERIFIED') text = `确定不通过此 "${row.name}" 的账号审核?`
+  ElMessageBox.confirm(
+    text,
+    '账号审核操作',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+      center: true
+    }
+  )
+    .then(async () => {
+      let res: any = await aduitAccount(row.id, type)
+      if (res.resultCode === 200) {
+        message('审核完成', 'success', true)
+        getData()
+      } else {
+        message('审核失败', 'error', true)
+      }
+    })
 }
 
 const getData = async () => {
@@ -102,6 +146,9 @@ const getData = async () => {
         </div>
         <div class="btn">
           <el-button @click="reset">重置</el-button>
+          <el-button @click="rowClick('999', 'add')">新增用户</el-button>
+          <el-button @click="reset">导出用户模板</el-button>
+          <el-button @click="reset">模板导入用户</el-button>
         </div>
       </div>
       <el-table :data="tableData" style="width: 100%" stripe border height="70.5vh" :header-cell-style="{
@@ -117,9 +164,16 @@ const getData = async () => {
         </el-table-column>
         <el-table-column prop="verifyStatus" label="审核状态" align="center">
           <template #default="scope">
-            <el-tag :type="scope.row.tag === 'UN_VERIFIED' ? 'warning' : 'success'" disable-transitions>{{ scope.row.tag
+            <el-tag :type="scope.row.verifyStatus === 'UN_VERIFIED' ? 'warning' : 'success'" disable-transitions>{{
+              scope.row.verifyStatus
               === 'UN_VERIFIED' ? '未审核' : '审核通过'
             }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="账号审核" align="center">
+          <template #default="scope">
+            <el-button type="primary" size="small" @click="audit(scope.row, 'VERIFIED')">通过</el-button>
+            <el-button type="danger" size="small" @click="audit(scope.row, 'UN_VERIFIED')">不通过</el-button>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center">
@@ -133,12 +187,11 @@ const getData = async () => {
       </div>
     </el-card>
 
-    <el-dialog v-model="dialogVisible" title="编辑用户信息" width="25vw" height="80vh" align-center center
-      :before-close="handleClose">
+    <el-dialog v-model="dialogVisible" :title="dialogConfig.title" width="25vw" height="80vh" align-center center>
       <div class="editUserList">
         <div class="inputItem">
           <el-input v-model="clickUserInfo.name" placeholder="请输入姓名" prefix-icon="User" />
-          <el-select clearable style="width: 18vw" v-model="clickUserInfo.sex" placeholder="性别">
+          <el-select clearable style="width: 18vw" v-model="clickUserInfo.sex" placeholder="请选择性别">
             <template #prefix>
               <el-icon size="16">
                 <component :is="options.get(clickUserInfo.sex)" />
@@ -161,7 +214,7 @@ const getData = async () => {
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
           <el-button type="primary" :loading="saveLoading" @click="saveEditUser">
-            保存
+            {{ dialogConfig.btnText }}
           </el-button>
         </span>
       </template>
@@ -172,6 +225,12 @@ const getData = async () => {
 .addPageMain {
   width: 100%;
   width: 100%;
+
+  .btn {
+    display: flex;
+    justify-content: space-between;
+    width: 22.5vw;
+  }
 
   .card {
     height: 85vh;

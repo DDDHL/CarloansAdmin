@@ -64,3 +64,34 @@ export const editUserInfo = (userInfo: {
     data: { ...userInfo }
   })
 }
+
+// 审核账号
+export const aduitAccount = (id: string, verifyStatus: 'VERIFIED' | 'UN_VERIFIED') => {
+  return request({
+    url: '/carLoan-api/sys/account/verify',
+    method: 'GET',
+    params: { id, verifyStatus }
+  })
+}
+
+// 新增用户
+export const addUser = (userInfo: {
+  name: string,
+  password: string,
+  sex: number,
+  phone: string,
+  address: string,
+  identifier: string,
+  gradeLevel: string,
+  marital: string,
+  political: string,
+  workingCondition: number,
+  nativePlace: string,
+  age: number
+}) => {
+  return request({
+    url: '/carLoan-api/sys/account/insert',
+    method: 'POST',
+    data: { ...userInfo }
+  })
+}
