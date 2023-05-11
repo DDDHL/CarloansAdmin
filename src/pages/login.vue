@@ -82,6 +82,7 @@ const login = async () => {
   if (loginRes.resultCode && loginRes.resultCode === 200) {
     publicStore.infoCount = loginRes.result.newInformationVO.count
     publicStore.role = loginRes.result.role
+    localStorage.setItem('accountId', loginRes.result.newInformationVO.accountId)
     timer.push(window.setTimeout(() => {
       router.push('/home')
       message('登录成功')

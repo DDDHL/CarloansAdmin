@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { usePublicStore } from '@/stores'
 
 const customerConfig = ['/Login', '/', '/Home', '/EchartsHome', '/List', '/User', '/404']
-const administratorConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/AddPage', '/List', '/UserList', '/404']
+const administratorConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/AddPage', '/List', '/MortgageList', '/UserList', '/404']
 
 // 设置路由规则
 const routes: Array<RouteRecordRaw> = [
@@ -33,6 +33,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/UserList',
         component: () => import('@/pages/UserList.vue')
+      },
+      {
+        path: '/MortgageList',
+        component: () => import('@/pages/MortgageList.vue')
       },
     ]
   }, {

@@ -45,11 +45,13 @@ export const usePublicStore = defineStore(
       fullLoading: false,
       fullScreen: false,
       asideShow: false,
-      breadList: [{
-        name: '后台主页',
-        url: '/EchartsHome',
-        selectType: true
-      }]
+      breadList: [
+        {
+          name: '后台主页',
+          url: '/EchartsHome',
+          selectType: true
+        },
+      ]
     }
   },
   actions: {
@@ -62,11 +64,18 @@ export const usePublicStore = defineStore(
               name: "新增订单",
               icon: 'Edit',
               url: '/AddPage'
-            }, {
-            name: '用户中心',
-            icon: 'Avatar',
-            url: '/UserList'
-          })
+            },
+            {
+              name: "抵押列表",
+              icon: 'Tickets',
+              url: '/MortgageList'
+            },
+            {
+              name: '用户中心',
+              icon: 'Avatar',
+              url: '/UserList'
+            }
+          )
           break;
       }
     },

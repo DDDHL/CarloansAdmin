@@ -15,7 +15,7 @@ onMounted(() => {
 })
 
 const userInfo = async () => {
-  let userRes: any = await getUserInfo('5')
+  let userRes: any = await getUserInfo(localStorage.getItem('accountId') || '1')
   if (userRes.resultCode && userRes.resultCode === 200) {
     publicStore.userInfo = userRes.result.data
     publicStore.menuListFlash()

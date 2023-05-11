@@ -46,7 +46,6 @@ const rowClick = async (id: string, type: 'add' | 'edit' = 'edit') => {
     // 打开新增用户
     clickUserInfo.value = {}
     clickUserInfo.value.sex = 1
-    dialogConfig.value.btnText = '新增'
     dialogConfig.value.btnText = '新增用户'
     dialogVisible.value = true
   }
@@ -73,7 +72,14 @@ const saveEditUser = async () => {
     }
   } else {
     // 新增用户
-    console.log(clickUserInfo.value)
+    let res: any = await addUser(clickUserInfo.value)
+    if (res.resultCode === 200) {
+      message('新增成功!')
+      getData()
+      dialogVisible.value = false
+    } else {
+      message(res.message || '新增失败!', 'error')
+    }
   }
   saveLoading.value = false
 }
@@ -191,6 +197,12 @@ const getData = async () => {
       <div class="editUserList">
         <div class="inputItem">
           <el-input v-model="clickUserInfo.name" placeholder="请输入姓名" prefix-icon="User" />
+          <el-input v-if="dialogConfig.btnText === '新增用户'" v-model="clickUserInfo.password" placeholder="请输入密码"
+            prefix-icon="Lock" />
+          <el-input v-if="dialogConfig.btnText === '新增用户'" v-model="clickUserInfo.identifier" placeholder="请输入身份证"
+            prefix-icon="Postcard" />
+          <el-input v-if="dialogConfig.btnText === '新增用户'" v-model="clickUserInfo.marital" placeholder="请输入婚姻状态"
+            prefix-icon="Avatar" />
           <el-select clearable style="width: 18vw" v-model="clickUserInfo.sex" placeholder="请选择性别">
             <template #prefix>
               <el-icon size="16">

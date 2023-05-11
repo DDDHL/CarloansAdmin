@@ -32,6 +32,15 @@ export const getUserInfo = (id: string) => {
   })
 }
 
+// 获取抵押信息
+export const getMortgageInfo = (id: string) => {
+  return request({
+    url: '/carLoan-api/mortgage/getMortgage',
+    method: 'GET',
+    params: { id }
+  })
+}
+
 // 获取用户列表
 export const getUserList = (pageConfig: {
   pageSize: number, pageNo: number, pageCount: number,
@@ -39,6 +48,20 @@ export const getUserList = (pageConfig: {
 }) => {
   return request({
     url: '/carLoan-api/sys/account/page',
+    method: 'POST',
+    data: {
+      ...pageConfig
+    }
+  })
+}
+
+// 获取抵押列表
+export const getMortgageList = (pageConfig: {
+  pageSize: number, pageNo: number, pageCount: number,
+  name: string, identifier: string, phone: string
+}) => {
+  return request({
+    url: '/carLoan-api/mortgage/page',
     method: 'POST',
     data: {
       ...pageConfig
@@ -71,6 +94,33 @@ export const aduitAccount = (id: string, verifyStatus: 'VERIFIED' | 'UN_VERIFIED
     url: '/carLoan-api/sys/account/verify',
     method: 'GET',
     params: { id, verifyStatus }
+  })
+}
+
+// 审核抵押单
+export const aduitMortgage = (id: string, verifyStatus: 'VERIFIED' | 'UN_VERIFIED') => {
+  return request({
+    url: '/carLoan-api/mortgage/verify',
+    method: 'GET',
+    params: { id, verifyStatus }
+  })
+}
+
+// 新增抵押单
+export const addMortgage = (data = {}) => {
+  return request({
+    url: '/carLoan-api/mortgage/insertMortgage',
+    method: 'POST',
+    data
+  })
+}
+
+// 修改个人密码
+export const updatePassword = (password: string) => {
+  return request({
+    url: '/carLoan-api/sys/account/updatePassword',
+    method: 'GET',
+    params: { password }
   })
 }
 

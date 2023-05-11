@@ -2,6 +2,7 @@
 import { usePublicStore } from '@/stores'
 import type { UploadProps } from 'element-plus'
 import { message, logOut } from '@/utils'
+import { updatePassword } from '@/api'
 const serverUrl = import.meta.env.VITE_BASE_URL
 const publicStore = usePublicStore()
 
@@ -13,6 +14,31 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
   }
   //publicStore.userInfo.avatarUrl = URL.createObjectURL(uploadFile.raw!)
   publicStore.userInfo.avatarUrl = res.result.data.url
+}
+
+let dialogVisible = ref(false)
+let saveLoading = ref(false)
+let firstPs = ref('')
+let secondPs = ref('')
+const updateConfirm = async () => {
+  saveLoading.value = true
+  if (!firstPs.value || !secondPs.value) {
+    message('请输入密码!', 'warning')
+    saveLoading.value = false
+    return
+  }
+  if (firstPs.value === secondPs.value) {
+    let res: any = await updatePassword(firstPs.value)
+    if (res.resultCode === 200) {
+      message('修改成功', 'success')
+      dialogVisible.value = false
+    } else {
+      message(res.message || '新增失败!', 'error')
+    }
+  } else {
+    message('两次密码不相同!', 'warning')
+  }
+  saveLoading.value = false
 }
 
 let token = ref<string | null>('')
@@ -52,17 +78,6 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
       <div class="info">
         <Douyin />
         <div class="infoInput">
-          <!-- <el-select clearable style="width: 30vw" v-model="publicStore.userInfo.sex" placeholder="性别">
-            <template #prefix>
-              <el-icon size="16">
-                <component :is="options.get(publicStore.userInfo.sex)" />
-              </el-icon>
-            </template>
-            <el-option label="女" :value="0"></el-option>
-            <el-option label="男" :value="1"></el-option>
-            <el-option label="中" :value="2"></el-option>
-            <el-option label="不知道" :value="3"></el-option>
-          </el-select> -->
           <el-input :value="publicStore.userInfo.sex ? '男' : '女'" placeholder="请输入性别"
             :prefix-icon="publicStore.userInfo.sex ? 'Male' : 'Female'" disabled />
           <el-input v-model="publicStore.userInfo.age" placeholder="请输入年龄" prefix-icon="Calendar" disabled />
@@ -72,11 +87,26 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
           <el-input v-model="publicStore.userInfo.nativePlace" placeholder="请输入地区" prefix-icon="MapLocation" disabled />
           <el-input v-model="publicStore.userInfo.address" placeholder="请输入住址" prefix-icon="LocationInformation"
             disabled />
-          <el-button type="primary" round>Primary</el-button>
+          <el-button type="primary" round @click="dialogVisible = true">修改密码</el-button>
         </div>
       </div>
       <Wave />
     </el-card>
+
+    <el-dialog v-model="dialogVisible" title="修改密码" width="25vw" height="30vh" align-center center>
+      <div class="password">
+        <el-input type="password" v-model="firstPs" placeholder="请输入密码" prefix-icon="Lock" />
+        <el-input type="password" v-model="secondPs" placeholder="请再次输入密码" prefix-icon="Lock" />
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" :loading="saveLoading" @click="updateConfirm">
+            修改密码
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 <style scoped lang="scss">
@@ -85,7 +115,13 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   position: relative;
   overflow: hidden;
 
-
+  .password {
+    height: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
 
   .card {
     height: 85vh;
