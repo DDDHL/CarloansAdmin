@@ -14,6 +14,22 @@ export const userLogin = (phone: string, password: string, code: string) => {
   })
 }
 
+// 导出用户模板
+export const exportUserListTemplate = () => {
+  return request({
+    url: '/carLoan-api/excel/template',
+    method: 'GET'
+  })
+}
+
+// 导出用户excel
+export const exportUserList = () => {
+  return request({
+    url: '/carLoan-api/excel/export',
+    method: 'GET'
+  })
+}
+
 // 获取验证码
 export const getPhoneCode = (phone: string) => {
   return request({
@@ -68,6 +84,47 @@ export const getMortgageList = (pageConfig: {
     }
   })
 }
+// 获取借款列表
+export const getBorrowList = (pageConfig: {
+  pageSize: number, pageNo: number, pageCount: number,
+  name: string, identifier: string, phone: string
+}) => {
+  return request({
+    url: '/carLoan-api/borrowMoney/pageBorrowMoney',
+    method: 'POST',
+    data: {
+      ...pageConfig
+    }
+  })
+}
+
+// 获取抵押列表
+export const getMortgageInfoList = (pageConfig: {
+  pageSize: number, pageNo: number, pageCount: number,
+  name: string, identifier: string, phone: string
+}) => {
+  return request({
+    url: '/carLoan-api/borrowingStatus/page',
+    method: 'POST',
+    data: {
+      ...pageConfig
+    }
+  })
+}
+
+// 获取款后列表
+export const getUserMortgageList = (pageConfig: {
+  pageSize: number, pageNo: number, pageCount: number,
+  name: string, identifier: string, phone: string
+}) => {
+  return request({
+    url: '/carLoan-api/paymentManagement/page',
+    method: 'POST',
+    data: {
+      ...pageConfig
+    }
+  })
+}
 
 // 修改用户信息
 export const editUserInfo = (userInfo: {
@@ -106,12 +163,30 @@ export const aduitMortgage = (id: string, verifyStatus: 'VERIFIED' | 'UN_VERIFIE
   })
 }
 
+// 审核借款单
+export const aduitBorrow = (borrowMoneyId: string, borrowingStatus: number) => {
+  return request({
+    url: '/carLoan-api/borrowingStatus/insertBorrowingStatus',
+    method: 'GET',
+    params: { borrowMoneyId, borrowingStatus }
+  })
+}
+
 // 新增抵押单
 export const addMortgage = (data = {}) => {
   return request({
     url: '/carLoan-api/mortgage/insertMortgage',
     method: 'POST',
     data
+  })
+}
+
+// 新增抵押单
+export const addBorrow = (mortgageId: string) => {
+  return request({
+    url: '/carLoan-api/borrowMoney/insertBorrowMoney',
+    method: 'GET',
+    params: { mortgageId }
   })
 }
 

@@ -11,7 +11,7 @@ let span: HTMLElement
 let con = ref()
 let codeText = ref<any>('获取验证码')
 let timer: number[] = []
-let account = ref('13411394421')
+let account = ref('13411394401')
 let password = ref('123456')
 let code = ref('1234')
 let sysCode: string | undefined

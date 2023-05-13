@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { usePublicStore } from '@/stores'
 
-const customerConfig = ['/Login', '/', '/Home', '/EchartsHome', '/List', '/User', '/404']
-const administratorConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/AddPage', '/List', '/MortgageList', '/UserList', '/404']
+const customerConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/BorrowMoneyState', '/404']
+const administratorConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/MortgageList', '/UserList', '/UserMortgageList', '/BorrowMoney', '/404']
 
 // 设置路由规则
 const routes: Array<RouteRecordRaw> = [
@@ -19,14 +19,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/pages/EchartsHome.vue')
       },
       {
-        path: '/AddPage',
-        component: () => import('@/pages/AddPage.vue')
-      },
-      {
-        path: '/List',
-        component: () => import('@/pages/List.vue')
-      },
-      {
         path: '/User',
         component: () => import('@/pages/User.vue')
       },
@@ -37,6 +29,18 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/MortgageList',
         component: () => import('@/pages/MortgageList.vue')
+      },
+      {
+        path: '/BorrowMoneyState',
+        component: () => import('@/pages/BorrowMoneyState.vue')
+      },
+      {
+        path: '/UserMortgageList',
+        component: () => import('@/pages/UserMortgageList.vue')
+      },
+      {
+        path: '/BorrowMoney',
+        component: () => import('@/pages/BorrowMoney.vue')
       },
     ]
   }, {

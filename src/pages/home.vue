@@ -19,6 +19,7 @@ const userInfo = async () => {
   if (userRes.resultCode && userRes.resultCode === 200) {
     publicStore.userInfo = userRes.result.data
     publicStore.menuListFlash()
+    router.push('/EchartsHome')
     timer.push(window.setTimeout(() => {
       fullLoading.value = false
       ElNotification({

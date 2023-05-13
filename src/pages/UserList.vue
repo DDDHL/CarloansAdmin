@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getUserList, getUserInfo, editUserInfo, aduitAccount, addUser } from '@/api'
+import { getUserList, getUserInfo, editUserInfo, aduitAccount, addUser, exportUserListTemplate, exportUserList } from '@/api'
 import { message } from '@/utils/index'
 let tableData = ref([])
 let dialogVisible = ref(false)
@@ -15,6 +15,10 @@ const options: any = new Map([
   [1, 'Male'],
   [2, 'Pointer'],
   [3, 'Delete'],
+])
+const workOptions: any = new Map([
+  [1, 'Suitcase'],
+  [0, 'HomeFilled'],
 ])
 const pageConfig = reactive({
   pageNo: 1,
@@ -32,6 +36,8 @@ onMounted(() => {
 const rowClick = async (id: string, type: 'add' | 'edit' = 'edit') => {
   if (type === 'edit') {
     // 打开编辑用户
+    dialogConfig.value.title = '编辑用户信息'
+    dialogConfig.value.btnText = '保存'
     tableLoading.value = true
     let res: any = await getUserInfo(id)
     if (res.resultCode === 200) {
@@ -46,9 +52,26 @@ const rowClick = async (id: string, type: 'add' | 'edit' = 'edit') => {
     // 打开新增用户
     clickUserInfo.value = {}
     clickUserInfo.value.sex = 1
-    dialogConfig.value.btnText = '新增用户'
+    clickUserInfo.value.workingCondition = 1
+    dialogConfig.value.title = '新增用户'
+    dialogConfig.value.btnText = '新增'
     dialogVisible.value = true
   }
+}
+
+const exportTemplate = async () => {
+  let res = await exportUserListTemplate()
+  console.log(res)
+}
+
+const exportExcel = async () => {
+  let res = await exportUserList()
+  console.log(res)
+}
+
+let dialogVisibleExport = ref(false)
+const importExcel = async () => {
+  //
 }
 
 const reset = () => {
@@ -153,8 +176,8 @@ const getData = async () => {
         <div class="btn">
           <el-button @click="reset">重置</el-button>
           <el-button @click="rowClick('999', 'add')">新增用户</el-button>
-          <el-button @click="reset">导出用户模板</el-button>
-          <el-button @click="reset">模板导入用户</el-button>
+          <el-button @click="exportExcel">导出用户列表</el-button>
+          <el-button @click="dialogVisibleExport = true">批量导入用户</el-button>
         </div>
       </div>
       <el-table :data="tableData" style="width: 100%" stripe border height="70.5vh" :header-cell-style="{
@@ -197,13 +220,23 @@ const getData = async () => {
       <div class="editUserList">
         <div class="inputItem">
           <el-input v-model="clickUserInfo.name" placeholder="请输入姓名" prefix-icon="User" />
-          <el-input v-if="dialogConfig.btnText === '新增用户'" v-model="clickUserInfo.password" placeholder="请输入密码"
+          <el-input v-if="dialogConfig.title === '新增用户'" v-model="clickUserInfo.password" placeholder="请输入密码"
             prefix-icon="Lock" />
-          <el-input v-if="dialogConfig.btnText === '新增用户'" v-model="clickUserInfo.identifier" placeholder="请输入身份证"
+          <el-input v-if="dialogConfig.title === '新增用户'" v-model="clickUserInfo.identifier" placeholder="请输入身份证"
             prefix-icon="Postcard" />
-          <el-input v-if="dialogConfig.btnText === '新增用户'" v-model="clickUserInfo.marital" placeholder="请输入婚姻状态"
+          <el-input v-if="dialogConfig.title === '新增用户'" v-model="clickUserInfo.marital" placeholder="请输入婚姻状态"
             prefix-icon="Avatar" />
-          <el-select clearable style="width: 18vw" v-model="clickUserInfo.sex" placeholder="请选择性别">
+          <el-select v-if="dialogConfig.title === '新增用户'" style="width: 18vw" v-model="clickUserInfo.workingCondition"
+            placeholder="请选择工作状态">
+            <template #prefix>
+              <el-icon size="16">
+                <component :is="workOptions.get(clickUserInfo.sex)" />
+              </el-icon>
+            </template>
+            <el-option label="工作中" :value="1"></el-option>
+            <el-option label="未工作" :value="0"></el-option>
+          </el-select>
+          <el-select style="width: 18vw" v-model="clickUserInfo.sex" placeholder="请选择性别">
             <template #prefix>
               <el-icon size="16">
                 <component :is="options.get(clickUserInfo.sex)" />
@@ -231,12 +264,47 @@ const getData = async () => {
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="dialogVisibleExport" title="导入用户数据Excel" width="30%">
+      <div class="export">
+        <el-button link @click="exportTemplate" style="color:blue">下载Excel模板</el-button>
+        <div class="box">
+
+        </div>
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisibleExport = false">Cancel</el-button>
+          <el-button type="primary" @click="dialogVisibleExport = false">
+            Confirm
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 <style scoped lang="scss">
 .addPageMain {
   width: 100%;
   width: 100%;
+
+  .export {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    >button {
+      justify-self: flex-start;
+    }
+
+    .box {
+      margin-top: 2vh;
+      width: 80%;
+      height: 20vh;
+      border: 1px solid;
+    }
+  }
 
   .btn {
     display: flex;

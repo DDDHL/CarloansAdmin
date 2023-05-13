@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getMortgageList, getMortgageInfo, aduitMortgage, addMortgage } from '@/api'
 import { message } from '@/utils/index'
+import { usePublicStore } from '@/stores'
 let tableData = ref([])
 let dialogVisible = ref(false)
 let tableLoading = ref(false)
@@ -12,7 +13,8 @@ const pageConfig = reactive({
   pageCount: 1,
   name: '',
   phone: '',
-  identifier: ''
+  identifier: '',
+  accountId: usePublicStore().userInfo.id
 })
 const size = ref('')
 const iconStyle = computed(() => {
@@ -38,12 +40,12 @@ const createBill = async () => {
   let res: any = await addMortgage(clickUserInfo.value)
   if (res.resultCode === 200) {
     message('新增抵押单成功!')
-    saveLoading.value = false
     dialogVisibleAdd.value = false
     await getData()
   } else {
     message(res.message || '新增抵押单失败!', 'error')
   }
+  saveLoading.value = false
   tableLoading.value = false
 }
 
@@ -109,31 +111,6 @@ const getData = async () => {
   <div class="addPageMain">
     <el-card class="card">
       <div class="inputArea">
-        <div class="input">
-          <el-popover placement="bottom" title="Tips" :width="200" trigger="contextmenu" hide-icon :auto-close="2000"
-            content="输入姓名，回车搜索">
-            <template #reference>
-              <el-input v-model="pageConfig.name" placeholder="搜索名字" prefix-icon="Search" @keydown.enter="getData" />
-            </template>
-          </el-popover>
-        </div>
-        <div class="input">
-          <el-popover placement="bottom" title="Tips" :width="200" trigger="contextmenu" hide-icon :auto-close="2000"
-            content="输入身份证，回车搜索">
-            <template #reference>
-              <el-input v-model="pageConfig.identifier" placeholder="搜索身份证" prefix-icon="Search"
-                @keydown.enter="getData" />
-            </template>
-          </el-popover>
-        </div>
-        <div class="input">
-          <el-popover placement="bottom" title="Tips" :width="200" trigger="contextmenu" :auto-close="2000"
-            content="输入手机号，回车搜索">
-            <template #reference>
-              <el-input v-model="pageConfig.phone" placeholder="搜索手机号" prefix-icon="Search" @keydown.enter="getData" />
-            </template>
-          </el-popover>
-        </div>
         <div class="btn">
           <el-button @click="reset">重置</el-button>
           <el-button @click="dialogVisibleAdd = true">新增抵押单</el-button>
@@ -164,7 +141,7 @@ const getData = async () => {
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="rowClick(scope.row.id)">编辑信息</el-button>
+            <el-button link type="primary" size="small" @click="rowClick(scope.row.id)">查看具体信息</el-button>
           </template>
         </el-table-column>
       </el-table>

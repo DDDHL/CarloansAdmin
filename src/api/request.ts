@@ -13,9 +13,8 @@ const requests = axios.create({
 //拦截器，设置token和进度条
 requests.interceptors.request.use(
   config => {
-    // 上传文件,修改请求头
-    if (config.url === '/question/upload' || config.url === 'AI/question/upload') {
-      config.headers!['Content-Type'] = 'multipart/form-data'
+    if (config.url === '/carLoan-api/excel/template') {
+      config.headers!['Content-Type'] = 'application/vnd.ms-excel'
     }
     // 自动带token
     config.headers.accessToken = localStorage.getItem('accessToken') || ''

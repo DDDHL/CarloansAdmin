@@ -30,15 +30,15 @@ export const usePublicStore = defineStore(
           url: '/EchartsHome'
         },
         {
-          name: "查询列表",
-          icon: 'Document',
-          url: '/List'
+          name: "借款状态",
+          icon: 'Memo',
+          url: '/BorrowMoneyState'
         },
         {
           name: '个人中心',
           icon: 'User',
           url: '/User'
-        }
+        },
       ],
       role: '管理员',
       infoCount: 0,
@@ -59,11 +59,16 @@ export const usePublicStore = defineStore(
     menuListFlash() {
       switch (this.role) {
         case '管理员':
-          this.menuList.push(
+          this.menuList = [
             {
-              name: "新增订单",
-              icon: 'Edit',
-              url: '/AddPage'
+              name: "后台主页",
+              icon: 'House',
+              url: '/EchartsHome'
+            },
+            {
+              name: "借款列表",
+              icon: 'List',
+              url: '/BorrowMoney'
             },
             {
               name: "抵押列表",
@@ -71,11 +76,21 @@ export const usePublicStore = defineStore(
               url: '/MortgageList'
             },
             {
-              name: '用户中心',
+              name: "款后管理",
+              icon: 'Notebook',
+              url: '/UserMortgageList'
+            },
+            {
+              name: '用户列表',
               icon: 'Avatar',
               url: '/UserList'
-            }
-          )
+            },
+            {
+              name: '个人中心',
+              icon: 'User',
+              url: '/User'
+            },
+          ]
           break;
       }
     },
