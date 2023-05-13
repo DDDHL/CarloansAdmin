@@ -16,7 +16,7 @@ onMounted(() => {
 })
 
 const userInfo = async () => {
-  let userRes: any = await getUserInfo(localStorage.getItem('accountId'))
+  let userRes: any = await getUserInfo(localStorage.getItem('accountId')!)
   if (userRes.resultCode && userRes.resultCode === 200) {
     publicStore.userInfo = userRes.result.data
     publicStore.role = userRes.result.data.role

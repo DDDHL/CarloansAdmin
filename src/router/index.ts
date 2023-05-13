@@ -8,7 +8,7 @@ const administratorConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    component: () => import('@/pages/Login.vue')
+    component: () => import('@/pages/login.vue')
   }, {
     path: '/Home',
     redirect: '/EchartsHome',
