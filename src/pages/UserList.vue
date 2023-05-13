@@ -366,6 +366,7 @@ const getData = async () => {
     .inputArea {
       height: 5.5vh;
       display: flex;
+      width: 60vw;
 
       .input {
         width: 260px;
