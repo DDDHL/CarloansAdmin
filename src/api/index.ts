@@ -22,6 +22,15 @@ export const exportUserListTemplate = () => {
   })
 }
 
+// 去除消息
+export const clearMsg = (accountId: string) => {
+  return request({
+    url: '/carLoan-api/newInformation/confirm',
+    method: 'GET',
+    params: { accountId }
+  })
+}
+
 // 导出用户excel
 export const exportUserList = () => {
   return request({

@@ -11,8 +11,9 @@ export interface publicStoreInterface {
 
 type menuListType = {
   name: string
-  icon: string,
+  icon: string
   url: string
+  msgNum: number
 }
 
 type userInfoType = {

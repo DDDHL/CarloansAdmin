@@ -8,9 +8,13 @@ const { asideShow, fullScreen, breadList, userInfo, infoCount } = storeToRefs(pu
 const reFresh = () => window.location.reload()
 
 const info = () => {
+  let message = '请点击左侧菜单栏处理新内容哦~'
+  if (!infoCount.value) {
+    message = '暂无信息'
+  }
   ElNotification({
     title: '查看消息',
-    message: '没做，别点了别点了',
+    message,
     type: 'info',
     position: 'bottom-right',
   })

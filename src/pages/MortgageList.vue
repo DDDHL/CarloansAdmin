@@ -2,6 +2,7 @@
 import { getMortgageList, getMortgageInfo, aduitMortgage, addMortgage } from '@/api'
 import { message } from '@/utils/index'
 import { usePublicStore } from '@/stores'
+const publicStore = usePublicStore()
 let tableData = ref([])
 let dialogVisible = ref(false)
 let tableLoading = ref(false)
@@ -14,7 +15,7 @@ const pageConfig = reactive({
   name: '',
   phone: '',
   identifier: '',
-  accountId: usePublicStore().userInfo.id
+  accountId: publicStore.userInfo.id
 })
 const size = ref('')
 const iconStyle = computed(() => {
@@ -31,6 +32,11 @@ const iconStyle = computed(() => {
 onMounted(() => {
   getData()
 })
+
+const userAdd = () => {
+  clickUserInfo.value = publicStore.userInfo
+  dialogVisibleAdd.value = true
+}
 
 let dialogVisibleAdd = ref(false)
 let saveLoading = ref(false)
@@ -49,6 +55,13 @@ const createBill = async () => {
   tableLoading.value = false
 }
 
+const reset = () => {
+  pageConfig.name = '';
+  pageConfig.phone = '';
+  pageConfig.identifier = '';
+  getData()
+}
+
 const rowClick = async (id: string) => {
   // 打开编辑用户
   tableLoading.value = true
@@ -61,13 +74,6 @@ const rowClick = async (id: string) => {
     message('获取用户信息失败!', 'error')
   }
   tableLoading.value = false
-}
-
-const reset = () => {
-  pageConfig.name = '';
-  pageConfig.phone = '';
-  pageConfig.identifier = '';
-  getData()
 }
 
 const audit = async (row: any, type: 'VERIFIED' | 'UN_VERIFIED') => {
@@ -112,8 +118,8 @@ const getData = async () => {
     <el-card class="card">
       <div class="inputArea">
         <div class="btn">
-          <el-button @click="reset">重置</el-button>
-          <el-button @click="dialogVisibleAdd = true">新增抵押单</el-button>
+          <el-button @click="reset">刷新列表</el-button>
+          <el-button @click="userAdd" v-if="publicStore.role !== '管理员'">新增抵押单</el-button>
         </div>
       </div>
       <el-table :data="tableData" style="width: 100%" stripe border height="70.5vh" :header-cell-style="{
@@ -133,7 +139,7 @@ const getData = async () => {
             }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="账号审核" align="center">
+        <el-table-column fixed="right" label="账号审核" align="center" v-if="publicStore.role === '管理员'">
           <template #default="scope">
             <el-button type="primary" size="small" @click="audit(scope.row, 'VERIFIED')">通过</el-button>
             <el-button type="danger" size="small" @click="audit(scope.row, 'UN_VERIFIED')">不通过</el-button>
@@ -296,10 +302,10 @@ const getData = async () => {
 
     <el-dialog v-model="dialogVisibleAdd" title="新增抵押单" width="25vw" height="80vh" align-center center>
       <div class="editUserListAdd">
-        <el-input v-model="clickUserInfo.name" placeholder="抵押人姓名" prefix-icon="User" />
-        <el-input v-model="clickUserInfo.phone" placeholder="手机号" prefix-icon="Iphone" />
-        <el-input v-model="clickUserInfo.age" placeholder="年龄" prefix-icon="Calendar" />
-        <el-input v-model="clickUserInfo.identifier" placeholder="身份证" prefix-icon="Postcard" />
+        <el-input v-model="clickUserInfo.name" placeholder="抵押人姓名" prefix-icon="User" disabled />
+        <el-input v-model="clickUserInfo.phone" placeholder="手机号" prefix-icon="Iphone" disabled />
+        <el-input v-model="clickUserInfo.age" placeholder="年龄" prefix-icon="Calendar" disabled />
+        <el-input v-model="clickUserInfo.identifier" placeholder="身份证" prefix-icon="Postcard" disabled />
         <el-input v-model="clickUserInfo.guaranteeName" placeholder="担保人姓名" prefix-icon="Avatar" />
         <el-input v-model="clickUserInfo.guaranteePhone" placeholder="与担保人关系" prefix-icon="Share" />
         <el-input v-model="clickUserInfo.guaranteeRelationship" placeholder="担保人手机号" prefix-icon="Iphone" />

@@ -211,7 +211,7 @@ const getData = async () => {
           </el-popover>
         </div>
         <div class="btn">
-          <el-button @click="reset">重置</el-button>
+          <el-button @click="reset">刷新列表</el-button>
           <el-button @click="rowClick('999', 'add')">新增用户</el-button>
           <el-button @click="exportExcel">导出用户列表</el-button>
           <el-button @click="dialogVisibleExport = true">批量导入用户</el-button>

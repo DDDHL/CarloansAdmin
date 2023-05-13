@@ -2,7 +2,7 @@
 import $ from 'jquery'
 import { message } from '@/utils'
 import router from '@/router'
-import { getPhoneCode, userLogin } from '@/api'
+import { userLogin } from '@/api'
 import { usePublicStore } from '@/stores'
 const publicStore = usePublicStore()
 let isIn = true

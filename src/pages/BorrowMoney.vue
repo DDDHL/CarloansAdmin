@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { getBorrowList, aduitBorrow, addBorrow } from '@/api'
+import { usePublicStore } from "@/stores";
 import { message } from '@/utils/index'
+const publicStore = usePublicStore()
 let tableData = ref([])
 let tableLoading = ref(false)
 let clickUserInfo: any = ref({})
@@ -16,6 +18,11 @@ const pageConfig = reactive({
 
 
 onMounted(() => {
+  publicStore.menuList.forEach((item, index) => {
+    if (item.name === '借款列表') {
+      publicStore.menuList[index].msgNum = 0
+    }
+  })
   getData()
 })
 
@@ -85,7 +92,7 @@ const getData = async () => {
     <el-card class="card">
       <div class="inputArea">
         <div class="btn">
-          <el-button @click="reset">重置</el-button>
+          <el-button @click="reset">刷新列表</el-button>
           <el-button @click="dialogVisibleAdd = true">新增借款单</el-button>
         </div>
       </div>

@@ -8,6 +8,7 @@ const publicStore = usePublicStore()
 const { fullLoading, asideShow, breadList } = storeToRefs(publicStore)
 fullLoading.value = true
 let timer: number[] = []
+let ws: WebSocket | undefined = undefined
 
 onMounted(() => {
   timer.forEach(item => clearTimeout(item))
@@ -15,18 +16,19 @@ onMounted(() => {
 })
 
 const userInfo = async () => {
-  let userRes: any = await getUserInfo(localStorage.getItem('accountId') || '1')
+  let userRes: any = await getUserInfo(localStorage.getItem('accountId'))
   if (userRes.resultCode && userRes.resultCode === 200) {
     publicStore.userInfo = userRes.result.data
+    publicStore.role = userRes.result.data.role
     publicStore.menuListFlash()
     router.push('/EchartsHome')
+    wsHandel()
     timer.push(window.setTimeout(() => {
       fullLoading.value = false
       ElNotification({
         title: '登录成功',
         message: '欢迎回来~',
         type: 'success',
-        position: 'bottom-right',
       })
     }, 1500))
   } else {
@@ -34,6 +36,21 @@ const userInfo = async () => {
       fullLoading.value = false
       logOut()
     }, 1500))
+  }
+}
+
+const wsHandel = () => {
+  ws && ws.close()
+  ws = new WebSocket(`ws://${import.meta.env.VITE_WS_URL}/carLoan-api/information/websocket?accessToken=${localStorage.getItem('accessToken')}`)
+  ws.onmessage = (e: any) => {
+    let data = JSON.parse(e.data)
+    if (data.type === 'borrowStatus') {
+      publicStore.menuList.forEach((item, index) => {
+        if (item.name === '借款列表') {
+          publicStore.menuList[index].msgNum += 1
+        }
+      })
+    }
   }
 }
 

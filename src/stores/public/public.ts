@@ -23,23 +23,7 @@ export const usePublicStore = defineStore(
         verifyStatus: "UN_VERIFIED",
         workingCondition: 1
       },
-      menuList: [
-        {
-          name: "后台主页",
-          icon: 'House',
-          url: '/EchartsHome'
-        },
-        {
-          name: "借款状态",
-          icon: 'Memo',
-          url: '/BorrowMoneyState'
-        },
-        {
-          name: '个人中心',
-          icon: 'User',
-          url: '/User'
-        },
-      ],
+      menuList: [],
       role: '管理员',
       infoCount: 0,
       fullLoading: false,
@@ -63,32 +47,66 @@ export const usePublicStore = defineStore(
             {
               name: "后台主页",
               icon: 'House',
-              url: '/EchartsHome'
-            },
-            {
-              name: "借款列表",
-              icon: 'List',
-              url: '/BorrowMoney'
+              url: '/EchartsHome',
+              msgNum: 0
             },
             {
               name: "抵押列表",
               icon: 'Tickets',
-              url: '/MortgageList'
+              url: '/MortgageList',
+              msgNum: 0
+            },
+            {
+              name: "借款列表",
+              icon: 'List',
+              url: '/BorrowMoney',
+              msgNum: 0
             },
             {
               name: "款后管理",
               icon: 'Notebook',
-              url: '/UserMortgageList'
+              url: '/UserMortgageList',
+              msgNum: 0
             },
             {
               name: '用户列表',
               icon: 'Avatar',
-              url: '/UserList'
+              url: '/UserList',
+              msgNum: 0
             },
             {
               name: '个人中心',
               icon: 'User',
-              url: '/User'
+              url: '/User',
+              msgNum: 0
+            },
+          ]
+          break;
+        case '客户':
+          this.menuList = [
+            {
+              name: "后台主页",
+              icon: 'House',
+              url: '/EchartsHome',
+              msgNum: 0
+            },
+            {
+              name: "抵押列表",
+              icon: 'Tickets',
+              url: '/MortgageList',
+              msgNum: 0
+            },
+            {
+              name: "借款状态",
+              icon: 'Memo',
+              url: '/BorrowMoneyState',
+              msgNum: 0
+            },
+            {
+              name: '个人中心',
+              icon: 'User',
+              url: '/User',
+              msgNum: 0
             },
           ]
           break;

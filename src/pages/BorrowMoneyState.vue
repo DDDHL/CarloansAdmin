@@ -18,6 +18,13 @@ onMounted(() => {
   getData()
 })
 
+const reset = () => {
+  pageConfig.name = '';
+  pageConfig.phone = '';
+  pageConfig.identifier = '';
+  getData()
+}
+
 const getData = async () => {
   tableLoading.value = true
   let res: any = await getMortgageInfoList(pageConfig)
@@ -34,8 +41,12 @@ const getData = async () => {
 <template>
   <div class="addPageMain">
     <el-card class="card">
-
-      <el-table :data="tableData" style="width: 100%" stripe border height="74.5vh" :header-cell-style="{
+      <div class="inputArea">
+        <div class="btn">
+          <el-button @click="reset">刷新列表</el-button>
+        </div>
+      </div>
+      <el-table :data="tableData" style="width: 100%" stripe border height="70.5vh" :header-cell-style="{
         background: '#eef1f6', color: '#606266'
       }" v-loading="tableLoading">
         <el-table-column prop="name" label="借款人姓名" align="center" />

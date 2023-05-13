@@ -35,7 +35,14 @@ const handleOpen = (key: string) => {
         <el-icon>
           <component :is="item.icon" />
         </el-icon>
-        <template #title>{{ item.name }}</template>
+        <template #title>
+          <el-badge v-show="item.msgNum" :value="item.msgNum" :max="99" class="badge">
+            {{ item.name }}
+          </el-badge>
+          <div v-show="!item.msgNum">
+            {{ item.name }}
+          </div>
+        </template>
       </el-menu-item>
     </el-menu>
   </div>
@@ -44,6 +51,18 @@ const handleOpen = (key: string) => {
 <style scoped lang="scss">
 .asideMain {
   overflow: hidden;
+
+
+
+  .badge {
+    position: relative;
+
+    :deep(.el-badge__content) {
+      top: 28.5px;
+      right: -9px;
+    }
+  }
+
 
   .logo {
     height: 60px;

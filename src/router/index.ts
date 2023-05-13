@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { usePublicStore } from '@/stores'
 
-const customerConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/BorrowMoneyState', '/404']
+const customerConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/BorrowMoneyState', '/MortgageList', '/404']
 const administratorConfig = ['/Login', '/', '/Home', '/EchartsHome', '/User', '/MortgageList', '/UserList', '/UserMortgageList', '/BorrowMoney', '/404']
 
 // 设置路由规则
@@ -62,6 +62,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  console.log(from)
   if (usePublicStore().role === '管理员') {
     if (to.fullPath && !administratorConfig.includes(to.fullPath as string)) {
       next({ name: '404' })
