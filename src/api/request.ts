@@ -13,8 +13,8 @@ const requests = axios.create({
 //拦截器，设置token和进度条
 requests.interceptors.request.use(
   config => {
-    if (config.url === '/carLoan-api/excel/template') {
-      config.headers!['Content-Type'] = 'application/vnd.ms-excel'
+    if (config.url === '/carLoan-api/excel/template' || config.url === '/carLoan-api/excel/export') {
+      config.responseType = 'blob'
     }
     // 自动带token
     config.headers.accessToken = localStorage.getItem('accessToken') || ''

@@ -18,7 +18,7 @@ export const userLogin = (phone: string, password: string, code: string) => {
 export const exportUserListTemplate = () => {
   return request({
     url: '/carLoan-api/excel/template',
-    method: 'GET'
+    method: 'POST'
   })
 }
 
@@ -26,7 +26,7 @@ export const exportUserListTemplate = () => {
 export const exportUserList = () => {
   return request({
     url: '/carLoan-api/excel/export',
-    method: 'GET'
+    method: 'POST'
   })
 }
 

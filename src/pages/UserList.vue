@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getUserList, getUserInfo, editUserInfo, aduitAccount, addUser, exportUserListTemplate, exportUserList } from '@/api'
 import { message } from '@/utils/index'
+import type { UploadProps } from 'element-plus'
 let tableData = ref([])
 let dialogVisible = ref(false)
 let tableLoading = ref(false)
@@ -10,6 +11,7 @@ let dialogConfig = ref({
   title: '编辑用户信息',
   btnText: '保存',
 })
+const serverUrl = import.meta.env.VITE_BASE_URL
 const options: any = new Map([
   [0, 'Female'],
   [1, 'Male'],
@@ -60,19 +62,54 @@ const rowClick = async (id: string, type: 'add' | 'edit' = 'edit') => {
 }
 
 const exportTemplate = async () => {
-  let res = await exportUserListTemplate()
-  console.log(res)
+  let res: any = await exportUserListTemplate()
+  downloadExcel(res, '导入Excel模板')
 }
 
 const exportExcel = async () => {
   let res = await exportUserList()
-  console.log(res)
+  downloadExcel(res, '用户数据')
+}
+
+const downloadExcel = (res: any, fileNameText: string) => {
+  const blob = new Blob([res], { type: "application/vnd.ms-excel;charset=utf-8" });
+  const fileName = fileNameText + ".xls";
+  const elink = document.createElement("a");
+  elink.download = fileName;
+  elink.style.display = "none";
+  elink.href = URL.createObjectURL(blob);
+  document.body.appendChild(elink);
+  elink.click();
+  URL.revokeObjectURL(elink.href);
+  document.body.removeChild(elink);
 }
 
 let dialogVisibleExport = ref(false)
-const importExcel = async () => {
-  //
+let token = ref<string | null>('')
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  token.value = localStorage.getItem('accessToken')
+  if (!['application/vnd.ms-excel'].includes(rawFile.type)) {
+    message('只能导入模板xls格式哦~', 'warning')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 10) {
+    message('Excel大小不能超过10MB哦~', 'warning')
+    return false
+  }
+  return true
 }
+
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+  res
+) => {
+  if (res.resultCode === 200) {
+    message('导入成功!')
+    getData()
+    dialogVisibleExport.value = false
+  } else {
+    message(res.message || '导入失败!', 'error')
+  }
+}
+
 
 const reset = () => {
   pageConfig.name = '';
@@ -269,7 +306,19 @@ const getData = async () => {
       <div class="export">
         <el-button link @click="exportTemplate" style="color:blue">下载Excel模板</el-button>
         <div class="box">
-
+          <el-upload class="upload-demo" drag :action="`${serverUrl}/carLoan-api/excel/import`" :headers="{
+            accessToken: token
+          }" multiple :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">
+              拖动文件到此处或者 <em>点击选择文件上传</em>
+            </div>
+            <template #tip>
+              <div class="el-upload__tip">
+                注意Excel需要为模板格式
+              </div>
+            </template>
+          </el-upload>
         </div>
       </div>
       <template #footer>
@@ -302,7 +351,6 @@ const getData = async () => {
       margin-top: 2vh;
       width: 80%;
       height: 20vh;
-      border: 1px solid;
     }
   }
 
