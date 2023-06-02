@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { getUserMortgageList } from '@/api'
+import { usePublicStore } from "@/stores";
+const publicStore = usePublicStore()
 let tableData = ref([])
 let tableLoading = ref(false)
 
@@ -14,6 +16,11 @@ const pageConfig = reactive({
 
 onMounted(() => {
   getData()
+  publicStore.menuList.forEach((item, index) => {
+    if (item.name === '款后管理') {
+      publicStore.menuList[index].msgNum = 0
+    }
+  })
 })
 
 

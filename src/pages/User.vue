@@ -7,13 +7,13 @@ const serverUrl = import.meta.env.VITE_BASE_URL
 const publicStore = usePublicStore()
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
-  res
+  res, uploadFile
 ) => {
   if (res.resultCode === 480) {
     logOut()
   }
-  //publicStore.userInfo.avatarUrl = URL.createObjectURL(uploadFile.raw!)
-  publicStore.userInfo.avatarUrl = res.result.data.url
+  publicStore.userInfo.avatarUrl = URL.createObjectURL(uploadFile.raw!)
+  //publicStore.userInfo.avatarUrl = res.result.data.url
 }
 
 let dialogVisible = ref(false)

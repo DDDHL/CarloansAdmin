@@ -4,6 +4,7 @@ import { usePublicStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import { getUserInfo } from '@/api'
 import { logOut } from '@/utils'
+import avatar from '@/assets/picture/avatar.jpg'
 const publicStore = usePublicStore()
 const { fullLoading, asideShow, breadList } = storeToRefs(publicStore)
 fullLoading.value = true
@@ -19,9 +20,10 @@ const userInfo = async () => {
   let userRes: any = await getUserInfo(localStorage.getItem('accountId')!)
   if (userRes.resultCode && userRes.resultCode === 200) {
     publicStore.userInfo = userRes.result.data
+    publicStore.userInfo.avatarUrl = avatar
     publicStore.role = userRes.result.data.role
     publicStore.menuListFlash()
-    router.push('/EchartsHome')
+    router.push('/User')
     wsHandel()
     timer.push(window.setTimeout(() => {
       fullLoading.value = false
@@ -38,18 +40,50 @@ const userInfo = async () => {
     }, 1500))
   }
 }
-
+let heartTimerReq = 0
+let heartTimerRes = 0
 const wsHandel = () => {
   ws && ws.close()
   ws = new WebSocket(`ws://${import.meta.env.VITE_WS_URL}/carLoan-api/information/websocket?accessToken=${localStorage.getItem('accessToken')}`)
+
+  ws.onopen = () => {
+    // 心跳
+    heartTimerReq = window.setInterval(() => {
+      ws?.send('ping')
+      heartTimerRes = window.setTimeout(() => {
+        // 55s没收到心跳，重启
+        window.clearInterval(heartTimerReq)
+        window.clearTimeout(heartTimerRes)
+        wsHandel()
+      }, 55 * 1000)
+    }, 60 * 1000)
+  }
+
   ws.onmessage = (e: any) => {
+    if (e.data === 'pong') {
+      // 收到回应，清除定时器
+      window.clearTimeout(heartTimerRes)
+      return
+    }
     let data = JSON.parse(e.data)
     if (data.type === 'borrowStatus') {
+      publicStore.menuList.forEach((item, index) => {
+        if (item.name === '款后管理') {
+          publicStore.menuList[index].msgNum += 1
+        }
+      })
+    } else if (data.type === 'mortgage') {
       publicStore.menuList.forEach((item, index) => {
         if (item.name === '借款列表') {
           publicStore.menuList[index].msgNum += 1
         }
       })
+    }
+  }
+  ws.onclose = (e) => {
+    if (e.code !== 1000) {
+      // 非正常关闭，重连
+      wsHandel()
     }
   }
 }
@@ -67,6 +101,7 @@ const go = (index: number, url: string) => {
 }
 
 onBeforeUnmount(() => {
+  ws && ws.close()
   timer.forEach(item => clearTimeout(item))
 })
 </script>

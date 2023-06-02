@@ -93,7 +93,7 @@ const getData = async () => {
       <div class="inputArea">
         <div class="btn">
           <el-button @click="reset">刷新列表</el-button>
-          <el-button @click="dialogVisibleAdd = true">新增借款单</el-button>
+          <!-- <el-button @click="dialogVisibleAdd = true">新增借款单</el-button> -->
         </div>
       </div>
       <el-table :data="tableData" style="width: 100%" stripe border height="70.5vh" :header-cell-style="{

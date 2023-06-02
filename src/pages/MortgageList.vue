@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getMortgageList, getMortgageInfo, aduitMortgage, addMortgage } from '@/api'
+import { getMortgageList, getMortgageInfo, aduitMortgage, addMortgage, addBorrow } from '@/api'
 import { message } from '@/utils/index'
 import { usePublicStore } from '@/stores'
 const publicStore = usePublicStore()
@@ -15,6 +15,7 @@ const pageConfig = reactive({
   name: '',
   phone: '',
   identifier: '',
+  //accountId: '',
   accountId: publicStore.userInfo.id
 })
 const size = ref('')
@@ -92,6 +93,7 @@ const audit = async (row: any, type: 'VERIFIED' | 'UN_VERIFIED') => {
     .then(async () => {
       let res: any = await aduitMortgage(row.id, type)
       if (res.resultCode === 200) {
+        await addBorrow(row.id)
         message('审核完成', 'success', true)
         getData()
       } else {
@@ -125,7 +127,6 @@ const getData = async () => {
       <el-table :data="tableData" style="width: 100%" stripe border height="70.5vh" :header-cell-style="{
         background: '#eef1f6', color: '#606266'
       }" v-loading="tableLoading">
-        <el-table-column prop="id" label="抵押单ID" align="center" />
         <el-table-column prop="name" label="抵押人姓名" align="center" />
         <el-table-column prop="identifier" label="抵押人身份证" align="center" />
         <el-table-column prop="phone" label="抵押人手机号" align="center" />

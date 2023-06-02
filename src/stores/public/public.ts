@@ -31,8 +31,8 @@ export const usePublicStore = defineStore(
       asideShow: false,
       breadList: [
         {
-          name: '后台主页',
-          url: '/EchartsHome',
+          name: '个人中心',
+          url: '/User',
           selectType: true
         },
       ]
@@ -44,12 +44,12 @@ export const usePublicStore = defineStore(
       switch (this.role) {
         case '管理员':
           this.menuList = [
-            {
-              name: "后台主页",
-              icon: 'House',
-              url: '/EchartsHome',
-              msgNum: 0
-            },
+            // {
+            //   name: "后台主页",
+            //   icon: 'House',
+            //   url: '/EchartsHome',
+            //   msgNum: 0
+            // },
             {
               name: "抵押列表",
               icon: 'Tickets',
@@ -84,12 +84,12 @@ export const usePublicStore = defineStore(
           break;
         case '客户':
           this.menuList = [
-            {
-              name: "后台主页",
-              icon: 'House',
-              url: '/EchartsHome',
-              msgNum: 0
-            },
+            // {
+            //   name: "后台主页",
+            //   icon: 'House',
+            //   url: '/EchartsHome',
+            //   msgNum: 0
+            // },
             {
               name: "抵押列表",
               icon: 'Tickets',
