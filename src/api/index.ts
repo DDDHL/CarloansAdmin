@@ -83,7 +83,7 @@ export const getUserList = (pageConfig: {
 // 获取抵押列表
 export const getMortgageList = (pageConfig: {
   pageSize: number, pageNo: number, pageCount: number,
-  name: string, identifier: string, phone: string
+  name: string, identifier?: string, phone: string
 }) => {
   return request({
     url: '/carLoan-api/mortgage/page',

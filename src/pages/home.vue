@@ -5,6 +5,7 @@ import { storeToRefs } from "pinia";
 import { getUserInfo } from '@/api'
 import { logOut } from '@/utils'
 import avatar from '@/assets/picture/avatar.jpg'
+import avatar2 from '@/assets/picture/avatar2.jpg'
 const publicStore = usePublicStore()
 const { fullLoading, asideShow, breadList } = storeToRefs(publicStore)
 fullLoading.value = true
@@ -20,8 +21,12 @@ const userInfo = async () => {
   let userRes: any = await getUserInfo(localStorage.getItem('accountId')!)
   if (userRes.resultCode && userRes.resultCode === 200) {
     publicStore.userInfo = userRes.result.data
-    publicStore.userInfo.avatarUrl = avatar
     publicStore.role = userRes.result.data.role
+    if (publicStore.role === '管理员') {
+      publicStore.userInfo.avatarUrl = avatar
+    } else {
+      publicStore.userInfo.avatarUrl = avatar2
+    }
     publicStore.menuListFlash()
     router.push('/User')
     wsHandel()
@@ -68,13 +73,13 @@ const wsHandel = () => {
     let data = JSON.parse(e.data)
     if (data.type === 'borrowStatus') {
       publicStore.menuList.forEach((item, index) => {
-        if (item.name === '款后管理') {
+        if (item.name === '借款状态') {
           publicStore.menuList[index].msgNum += 1
         }
       })
     } else if (data.type === 'mortgage') {
       publicStore.menuList.forEach((item, index) => {
-        if (item.name === '借款列表') {
+        if (item.name === '抵押列表') {
           publicStore.menuList[index].msgNum += 1
         }
       })

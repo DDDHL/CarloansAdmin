@@ -8,14 +8,12 @@ let dialogVisible = ref(false)
 let tableLoading = ref(false)
 let clickUserInfo: any = ref({})
 
-const pageConfig = reactive({
+const pageConfig: any = reactive({
   pageNo: 1,
   pageSize: 15,
   pageCount: 1,
   name: '',
   phone: '',
-  identifier: '',
-  //accountId: '',
   accountId: publicStore.userInfo.id
 })
 const size = ref('')
@@ -59,7 +57,6 @@ const createBill = async () => {
 const reset = () => {
   pageConfig.name = '';
   pageConfig.phone = '';
-  pageConfig.identifier = '';
   getData()
 }
 
@@ -104,6 +101,9 @@ const audit = async (row: any, type: 'VERIFIED' | 'UN_VERIFIED') => {
 
 const getData = async () => {
   tableLoading.value = true
+  if (publicStore.role !== '管理员') {
+    pageConfig.identifier = publicStore.userInfo.identifier
+  }
   let res: any = await getMortgageList(pageConfig)
   if (res.resultCode === 200) {
     tableData.value = res.result.rows
@@ -112,6 +112,11 @@ const getData = async () => {
     pageConfig.pageNo = res.result.pageNo
   }
   tableLoading.value = false
+  publicStore.menuList.forEach((item, index) => {
+    if (item.name === '抵押列表') {
+      publicStore.menuList[index].msgNum = 0
+    }
+  })
 }
 </script>
 

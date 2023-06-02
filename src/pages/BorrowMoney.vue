@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { getBorrowList, aduitBorrow, addBorrow } from '@/api'
-import { usePublicStore } from "@/stores";
 import { message } from '@/utils/index'
-const publicStore = usePublicStore()
 let tableData = ref([])
 let tableLoading = ref(false)
 let clickUserInfo: any = ref({})
@@ -18,11 +16,6 @@ const pageConfig = reactive({
 
 
 onMounted(() => {
-  publicStore.menuList.forEach((item, index) => {
-    if (item.name === '借款列表') {
-      publicStore.menuList[index].msgNum = 0
-    }
-  })
   getData()
 })
 

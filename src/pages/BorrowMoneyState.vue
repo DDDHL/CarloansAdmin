@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getMortgageInfoList } from '@/api'
-import { usePublicStore } from '@/stores'
+import { usePublicStore } from "@/stores";
+const publicStore = usePublicStore()
 let tableData = ref([])
 let tableLoading = ref(false)
 
@@ -35,6 +36,11 @@ const getData = async () => {
     pageConfig.pageNo = res.result.pageNo
   }
   tableLoading.value = false
+  publicStore.menuList.forEach((item, index) => {
+    if (item.name === '借款状态') {
+      publicStore.menuList[index].msgNum = 0
+    }
+  })
 }
 </script>
 
